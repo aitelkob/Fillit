@@ -6,11 +6,19 @@
 /*   By: yait-el- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/31 04:44:25 by yait-el-          #+#    #+#             */
-/*   Updated: 2019/06/03 06:45:28 by yait-el-         ###   ########.fr       */
+/*   Updated: 2019/06/04 10:12:24 by yait-el-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line/get_next_line.h"
+
+typedef struct	s_valid
+{
+	int     hash;
+	int     point;
+	int     line;
+	int     connection;
+}				t_valid;
 
 int		check_char(char *str)
 {
@@ -42,6 +50,39 @@ int     check_connection(char *str,int i)
 	return (connection);
 }
 
+t_valid		*char_counter(char *str)
+{
+	t_valid		*count;
+	int			i;
+
+	count= (*t_valid)malloc(sizeof(t_valid));
+	count->hash = 0;
+	count->point = 0;
+	count->line = 0;
+	count->connection = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '#')
+			count->hash++;
+		if (str[i] == '.')
+			count->point++;
+		if (str[i] == '\n')
+			count->line++;
+		i++;
+	}
+	return (count);
+}
+
+int		checker(t_valid *count)
+{
+	if (count->hash != 4 || count->hash != 8)
+		return (1);
+	if ((count->line +1) % 5 != 0)
+		return (1);
+	return (0);
+}
+
 int		char_counter(char *str)
 {
 	int		i;
@@ -68,7 +109,7 @@ int		char_counter(char *str)
 			line++;
 		i++;
 	}
-	if (hash != 4 && line != 5 && line != 16 && (connection != 6 || connection != 8))
+	if (hash != 4 && (line != 5 || line != 4 ) && point != 16 && (connection != 6 || connection != 8))
 		return (1);
 	return (0);
 }

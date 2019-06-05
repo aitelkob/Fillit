@@ -6,7 +6,7 @@
 /*   By: yait-el- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/31 04:44:25 by yait-el-          #+#    #+#             */
-/*   Updated: 2019/06/04 10:12:24 by yait-el-         ###   ########.fr       */
+/*   Updated: 2019/06/05 19:43:34 by yait-el-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,15 @@ t_valid		*char_counter(char *str)
 
 int		checker(t_valid *count)
 {
-	if (count->hash != 4 || count->hash != 8)
+	if (count->hash < 4)
 		return (1);
-	if ((count->line +1) % 5 != 0)
+	if ( (count->hash % 4) != 0 ||((count->line +1) % 5 != 0) 
+			|| ((count->point % 4) != 0) )
 		return (1);
 	return (0);
 }
 
-int		char_counter(char *str)
+/*int		char_counter(char *str)
 {
 	int		i;
 	int		hash;
@@ -112,13 +113,42 @@ int		char_counter(char *str)
 	if (hash != 4 && (line != 5 || line != 4 ) && point != 16 && (connection != 6 || connection != 8))
 		return (1);
 	return (0);
+}*/
+int		mother_of_cheker(char *str)
+{
+	t_valid		*count;
+	count = char_counter(str);
+	if (checke(count))
+		return (1);
 }
-
+int		check_connection(char *str)
+{
+	int		i;
+	 i = 0;
+	while (str[i])
+	{
+		hash = 0;
+		connection = 0;
+		k = 0;
+		while (k++ < 21)
+		{
+			if (str[i] == '#')
+			{
+				hash++;
+				connection += check_connection(str,i);
+				if (hash < 6 && hash == 4)
+					return (1);
+			}
+			i++;
+		}
+	}
+	return (0);
+}
 int		all_chekers(char *str)
 {
 	if (check_char(str))
 		return (1);
-	if (char_counter(str))
+	if (mother_of_cheker(str))
 		return (1);
 	return (0);
 }
@@ -128,6 +158,7 @@ char	*extract(char *str,size_t size)
 	size_t  sizet;
 
 	tmp = (char*)malloc(sizeof(char) * size);
+	ft_memset(tmp, 0, size);
 	sizet = ft_strlen(str);
 	ft_memcpy(tmp,str,sizet);
 	free(str);
@@ -157,7 +188,7 @@ char	*ft_readfile(char *file)
 	}
 	if (all_chekers(tetrominos))
 	{
-		ft_putendl("the char is not valid");
+		ft_putendl("error \n");
 		exit(0);
 	}
 	return (tetrominos);

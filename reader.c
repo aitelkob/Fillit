@@ -6,7 +6,7 @@
 /*   By: yait-el- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/31 04:44:25 by yait-el-          #+#    #+#             */
-/*   Updated: 2019/06/09 11:05:19 by yait-el-         ###   ########.fr       */
+/*   Updated: 2019/06/10 11:03:53 by yait-el-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ int		if_tetro(char *str,int i)
 	int		col;
 	int		row;
 
-	while (str[i] != '\0')
+	while (str[i] != '\0' || !ft_strlen(str))
 	{
 		row = 1;
 		while (row < 5)
@@ -147,7 +147,7 @@ int		if_tetros(char	*str,int tetro)
 	int     row;
 
 	i = 0;
-	while (tetro != 1 && str[i] != '\0')
+	while (tetro-- != 1 && str[i] != '\0')
 	{
 		row = 1;
 		while (row < 5)
@@ -163,10 +163,9 @@ int		if_tetros(char	*str,int tetro)
 			row++;
 			i++;
 		}
+	}
 		if (tetro == 1 && str[i] != '\0')
 			if_tetros(str , i);
-		tetro--;
-	}
 	return (0);
 }
 int		check_line(char	*str,int tetro)
@@ -205,10 +204,8 @@ int		check_connection_if_valid(char *str)
 	connection = 0;
 	hash  = 0;
 	i = 0;
-	while (str[i])
+	while (str[i] || !ft_strlen(str))
 	{
-		hash = 0;
-		connection = 0;
 		k = 0;
 		while (k++ < 21)
 		{
@@ -270,8 +267,10 @@ char	*ft_readfile(char *file)
 	if (all_chekers(tetrominos))
 	{
 		ft_putendl("error ");
-		exit(1);
+		exit(0);
 	}
+	else
+		ft_putendl("work");
 	return (tetrominos);
 }
 int main(int argc,char **argv)

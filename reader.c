@@ -6,7 +6,7 @@
 /*   By: yait-el- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/31 04:44:25 by yait-el-          #+#    #+#             */
-/*   Updated: 2019/06/05 19:43:34 by yait-el-         ###   ########.fr       */
+/*   Updated: 2019/06/09 11:05:19 by yait-el-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_valid		*char_counter(char *str)
 	t_valid		*count;
 	int			i;
 
-	count= (*t_valid)malloc(sizeof(t_valid));
+	count = (t_valid*)malloc(sizeof(t_valid));
 	count->hash = 0;
 	count->point = 0;
 	count->line = 0;
@@ -85,46 +85,126 @@ int		checker(t_valid *count)
 }
 
 /*int		char_counter(char *str)
+  {
+  int		i;
+  int		hash;
+  int		point;
+  int		line;
+  int		connection;
+
+  connection = 0;
+  point = 0;
+  i = 0;
+  hash = 0;
+  line = 0;
+  while (str[i])
+  {
+  if (str[i] == '#')
+  {
+  connection += check_connection(str,i);
+  hash++;
+  }
+  if (str[i] == '.')
+  point++;
+  if (str[i] == '\n')
+  line++;
+  i++;
+  }
+  if (hash != 4 && (line != 5 || line != 4 ) && point != 16 && (connection != 6 || connection != 8))
+  return (1);
+  return (0);
+  }*/
+int		if_tetro(char *str,int i)
+{
+	int		col;
+	int		row;
+
+	while (str[i] != '\0')
+	{
+		row = 1;
+		while (row < 5)
+		{
+			col = 1;
+			while (str[i] != '\n')
+			{
+				col++;
+				i++;
+			}
+			if (col != 5)
+				return (1);
+			row++;
+			i++;
+		}
+		if (str[i] != '\0')
+			return (1);
+	}
+	return (0);
+}
+int		if_tetros(char	*str,int tetro)
 {
 	int		i;
-	int		hash;
-	int		point;
-	int		line;
-	int		connection;
+	int     col;
+	int     row;
 
-	connection = 0;
-	point = 0;
 	i = 0;
-	hash = 0;
-	line = 0;
-	while (str[i])
+	while (tetro != 1 && str[i] != '\0')
 	{
-		if (str[i] == '#')
+		row = 1;
+		while (row < 5)
 		{
-			connection += check_connection(str,i);
-			hash++;
+			col = 1;
+			while (str[i] != '\n' && col >= 0)
+			{
+				col++;
+				i++;
+			}
+			if (col != 5)
+				return (1);
+			row++;
+			i++;
 		}
-		if (str[i] == '.')
-			point++;
-		if (str[i] == '\n')
-			line++;
-		i++;
+		if (tetro == 1 && str[i] != '\0')
+			if_tetros(str , i);
+		tetro--;
 	}
-	if (hash != 4 && (line != 5 || line != 4 ) && point != 16 && (connection != 6 || connection != 8))
-		return (1);
 	return (0);
-}*/
+}
+int		check_line(char	*str,int tetro)
+{
+	int		var;
+
+	if (tetro == 1)
+		var = if_tetro(str,0);
+	if (tetro >= 1)
+		var = if_tetros(str,tetro);
+	if (var)
+		return (1);
+	else
+		return (0);
+}
 int		mother_of_cheker(char *str)
 {
 	t_valid		*count;
+	int			tetrominos;
 	count = char_counter(str);
-	if (checke(count))
+	if (checker(count))
 		return (1);
+	tetrominos = count->hash / 4;
+	// check if tetrominos 1 or maney 
+	if (check_line(str,tetrominos))
+		return (1);
+	return (0);
 }
-int		check_connection(char *str)
+int		check_connection_if_valid(char *str)
 {
 	int		i;
-	 i = 0;
+	int		k;
+	int		hash;
+	int		connection;
+
+	connection = 0;
+	hash  = 0;
+	i = 0;
 	while (str[i])
 	{
 		hash = 0;
@@ -150,11 +230,13 @@ int		all_chekers(char *str)
 		return (1);
 	if (mother_of_cheker(str))
 		return (1);
+	if (check_connection_if_valid(str))
+		return (1);
 	return (0);
 }
-char	*extract(char *str,size_t size)
+char	*extract(void  *str,size_t size)
 {
-	char *tmp;
+	void	*tmp;
 	size_t  sizet;
 
 	tmp = (char*)malloc(sizeof(char) * size);
@@ -172,7 +254,6 @@ char	*ft_readfile(char *file)
 	char	*buff;
 	char	*tetrominos;
 	size_t 	size;
-	char	*tmp;
 
 
 	size = 22;	
@@ -184,12 +265,12 @@ char	*ft_readfile(char *file)
 		ft_strcat(tetrominos,buff);
 		size = size + 21;
 		tetrominos = extract(tetrominos,size);
-		ft_memset(tmp,0,size);
+		ft_memset(buff,0,21);
 	}
 	if (all_chekers(tetrominos))
 	{
-		ft_putendl("error \n");
-		exit(0);
+		ft_putendl("error ");
+		exit(1);
 	}
 	return (tetrominos);
 }
@@ -198,4 +279,5 @@ int main(int argc,char **argv)
 	char	*str;
 
 	str = ft_readfile(argv[1]);
+	ft_putendl(str);
 }
